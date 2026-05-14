@@ -1,33 +1,51 @@
-// 1. Select elements from the HTML document
-const descriptionInput = document.querySelector('#description');
+// 1. Select the correct elements from your HTML
+const descriptionInput = document.querySelector('#desc');
 const amountInput = document.querySelector('#amount');
-const incomeBtn = document.querySelector('#add-income');
-const expenseBtn = document.querySelector('#add-expense');
+const incomeBtn = document.querySelector('#incomeBtn');
+const expenseBtn = document.querySelector('#expenseBtn');
+const incomeList = document.querySelector('#incomeList');
+const expenseList = document.querySelector('#expenseList');
+const balanceDisplay = document.querySelector('#balance');
 
-// 2. Handle adding an income
-incomeBtn.addEventListener('click', function() {
-    // Get values from inputs and convert amount to a number
-    const description = descriptionInput.value;
-    const amount = Number(amountInput.value);
+// Total balance variable
+let totalBalance = 0;
 
-    // Validate that description is not empty and amount is positive
-    if (description !== "" && amount > 0) {
-        console.log("Adding income: " + description + " - " + amount);
-        // TODO: Add logic to display the item in the list and update the total budget
+// 2. Function to add an item to the lists
+function addTransaction(description, amount, type) {
+    const listItem = document.createElement('li');
+    listItem.innerText = `${description}: ${amount} kr`;
+
+    if (type === 'income') {
+        totalBalance += amount;
+        incomeList.appendChild(listItem);
     } else {
-        alert("Please fill in both fields correctly!");
+        totalBalance -= amount;
+        expenseList.appendChild(listItem);
+    }
+
+    // Update the balance on the screen
+    balanceDisplay.innerText = totalBalance;
+}
+
+// 3. Event Listeners for buttons
+incomeBtn.addEventListener('click', function() {
+    const desc = descriptionInput.value;
+    const amt = Number(amountInput.value);
+
+    if (desc !== "" && amt > 0) {
+        addTransaction(desc, amt, 'income');
+        descriptionInput.value = "";
+        amountInput.value = "";
     }
 });
 
-// 3. Handle adding an expense
 expenseBtn.addEventListener('click', function() {
-    const description = descriptionInput.value;
-    const amount = Number(amountInput.value);
+    const desc = descriptionInput.value;
+    const amt = Number(amountInput.value);
 
-    if (description !== "" && amount > 0) {
-        console.log("Adding expense: " + description + " - " + amount);
-        // TODO: Add logic to deduct from the budget and update the UI
-    } else {
-        alert("Please fill in both fields correctly!");
+    if (desc !== "" && amt > 0) {
+        addTransaction(desc, amt, 'expense');
+        descriptionInput.value = "";
+        amountInput.value = "";
     }
 });
